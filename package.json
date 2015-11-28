@@ -1,0 +1,29 @@
+{
+  "name": "the-awesome-bookmarks",
+  "version": "0.0.1",
+  "description": "Simple web site for keeping bookmarks and notes in folders.",
+  "main": "server.js",
+  "repository" : "https://github.com/cemyabansu/bookmarks",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.0.2",
+    "compression": "^1.5.2",
+    "ejs": "^2.3.4",
+    "express": "^4.12.3",
+    "mongoose": "^4.0.3",
+    "validator": "^4.2.0",
+    "mongoose-relationship": "^0.1.4"
+  },
+  "engines": {
+    "node": "0.12.7"
+  },
+  "keywords": [
+    "node",
+    "heroku",
+    "express",
+    "urlshortener"
+  ],
+  "license": "MIT"
+}
