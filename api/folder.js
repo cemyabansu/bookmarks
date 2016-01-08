@@ -59,7 +59,26 @@ var getFolder = function(req,res){
     });
 }
 
+var getFolders = function(req,res){
+  console.log("Get all folders request. Date :" + Date.now());
+
+  if (!req.query.userid) {
+    res.sendStatus(400);
+    return;
+  }
+
+  Folder.find({ userid: req.query.userid }, function (err, returnedFolders) {
+      if(err === null && returnedFolders !== null){
+          res.status(200).json(returnedFolders);
+      }else{
+          res.sendStatus(400);
+      }
+    });
+}
+
 folderRouter.use('/add', addFolder);
+
+folderRouter.use('/getall', getFolders);
 
 folderRouter.use('/get', getFolder);
 
