@@ -7,3 +7,9 @@ body {
 main {
   flex: 1 0 auto;
 }
+
+#folderList .collection-item:hover
+{
+    background: #3374C2;
+    cursor: pointer;
+}
