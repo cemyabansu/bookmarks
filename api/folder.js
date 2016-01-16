@@ -6,18 +6,18 @@ var folderRouter = express.Router();
 
 var addFolder = function(req,res){
   console.log("Add folder request. Date :" + Date.now());
-
   //getting folder name and password
-  var reqUserName = req.query.username;
-  var reqFolderName = req.query.foldername;
+  var reqUserId = req.body.userid;
+  var reqFolderName = req.body.foldername;
 
   //controlling values
-  if (!reqUserName || !reqFolderName || !reqUserName === "" || reqFolderName === "") {
+  if (!reqUserId || !reqFolderName || !reqUserId === "" || reqFolderName === "") {
+    console.log("Request body : " + reqUserId + " - " + reqFolderName);
     res.sendStatus(400);
     return;
   }
 
-  User.findOne({ username: reqUserName }, function (err, returnedUser) {
+  User.findOne({ _id: reqUserId }, function (err, returnedUser) {
       if(err === null && returnedUser !== null){
         console.log("User found : " + returnedUser._id);
         var user = returnedUser;
@@ -28,7 +28,7 @@ var addFolder = function(req,res){
 
         newFolder.save( function ( err, newFolder ){
           if(!err){
-            res.sendStatus(200);
+            res.status(200).json(newFolder._id);
             console.log("New folder added. folder name : "+ newFolder.name + ", userid : " + newFolder.userid);
           }
           else{
@@ -37,6 +37,7 @@ var addFolder = function(req,res){
           }
         });
       }else{
+        res.status(400).json("User not found!");
         console.log("User not found!");
       }
     });
@@ -76,10 +77,29 @@ var getFolders = function(req,res){
     });
 }
 
-folderRouter.use('/add', addFolder);
+var deleteFolder = function(req,res){
+  console.log("Delete folder request. Date :" + Date.now());
+
+  if (!req.query.folderid) {
+    res.sendStatus(400);
+    return;
+  }
+
+  Folder.remove({ _id: req.query.folderid }, function (err) {
+      if(err === null){
+          res.sendStatus(200);
+      }else{
+          res.sendStatus(400);
+      }
+    });
+}
+
+folderRouter.post('/add', addFolder);
 
 folderRouter.use('/getall', getFolders);
 
 folderRouter.use('/get', getFolder);
+
+folderRouter.use('/delete', deleteFolder);
 
 module.exports = folderRouter;

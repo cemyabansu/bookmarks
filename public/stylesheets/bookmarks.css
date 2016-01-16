@@ -13,3 +13,8 @@ main {
     background: #3374C2;
     cursor: pointer;
 }
+
+.deleteFolder:hover
+{
+    cursor: pointer;
+}
