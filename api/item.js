@@ -1,14 +1,15 @@
 var express = require('express');
 var Item = require('../models/item');
+var mongoose = require('mongoose');
 
 var itemRouter = express.Router();
 
 var addItem = function(req,res){
   console.log("Add item request. Date :" + new Date().toLocaleString());
 
-  var reqName = req.query.itemname;
-  var reqValue = req.query.itemvalue;
-  var reqFolderid = req.query.folderid;
+  var reqName = req.body.itemname;
+  var reqValue = req.body.itemvalue;
+  var reqFolderid = req.body.folderid;
 
   //TODO : check if folder exist
   if (!reqName || reqName === "" || !reqValue || reqValue === "" || !reqFolderid || reqFolderid === "") {
@@ -25,7 +26,7 @@ var addItem = function(req,res){
 
   newItem.save( function ( err, newItem ){
     if (!err) {
-      res.sendStatus(200);
+      res.status(200).json(newItem._id);
       console.log("New item added. item name : "+ newItem.name + ", value : " + newItem.value);
     }
     else {
@@ -53,8 +54,30 @@ var getItem = function(req,res){
     });
 }
 
-itemRouter.use('/add', addItem);
+var getAllItems = function(req,res){
+  console.log("Get all items request. Date :" + Date.now());
+
+  if (!req.query.folderid) {
+    res.sendStatus(400);
+    console.log("Bad request. Parameter missing.");
+    return;
+  }
+
+  Item.find({ folderid: req.query.folderid }, function (err, returnedItems) {
+      if(err === null && returnedItems !== null){
+          res.status(200).json(returnedItems);
+          console.log("OK.");
+      }else{
+          res.sendStatus(400);
+          console.log("Error returned from db.");
+      }
+    });
+}
+
+itemRouter.post('/add', addItem);
 
 itemRouter.use('/get', getItem);
+
+itemRouter.get('/getall', getAllItems);
 
 module.exports = itemRouter;
