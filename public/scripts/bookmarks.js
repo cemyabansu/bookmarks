@@ -32,7 +32,8 @@ function OnFolderClick(){
 
   $.get("api/item/getall", {folderid : folderId})
   .done(function( items ) {
-    //add each folder to list
+    $("#itemList").empty();
+    //add each item to list
     for (var i = 0; i < items.length; i++) {
       AddItemToItemList($('#itemList'),items[i].name, items[i].value, items[i]._id);
     }
@@ -78,7 +79,10 @@ function SubmitAItem(){
 
   // Put the results in a div
   posting.done(function( data ) {
-    AddItemToItemList($('#itemList'),itemName, itemContent, data);
+    if (folderId === $('#folderList .active').attr('key')) {
+      AddItemToItemList($('#itemList'),itemName, itemContent, data);
+    }
+    OnFolderClick.apply($('#folderList li[key="'+ folderId +'"]'));
   });
 
   posting.fail(function(error){
@@ -115,9 +119,9 @@ function SubmitAFolder(){
 }
 
 function DeleteFolder(){
-  var folderId = $(this).parent().attr('key');
+  var folderId = $(this).closest('#folderCard').attr('key');
 
-  $.get("api/folder/delete", {folderid : folderId})
+  $.get("api/folder/delete", {folder_id : folderId})
   .done(function() {
     var willBeDeleted = $('#folderList li[key="'+ folderId +'"]');
     var indexWillBeDeleted = $('#folderList .collection-item').index( willBeDeleted) ;
@@ -139,6 +143,20 @@ function DeleteFolder(){
   });
 }
 
+function DeleteItem(e){
+  //to prevent other click action.
+  e.stopImmediatePropagation();
+  var item = $(this).closest('li');
+  var itemId = item.attr('key');
+
+  $.get("api/item/delete", {itemid : itemId})
+  .done(function() {
+    item.remove();
+  }).fail(function() {
+    alert( "error" );
+  });
+}
+
 function AddFolderToFolderList(folderid, name, setActivate){
   var folderList = $('#folderList');
   folderList.append(
@@ -154,15 +172,20 @@ function AddFolderToFolderList(folderid, name, setActivate){
 
 function AddItemToItemList($ItemList, itemName, itemContent, itemId){
   // <li>
-  //   <div class="collapsible-header"><i class="material-icons">bookmark border</i>First</div>
+  //    <div class="collapsible-header"><i class="material-icons">bookmark border</i>
+  //      First
+  //      <a class="secondary-content deleteFolder"><i class="material-icons">delete</i></a>
+  //    </div>
   //   <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
   // </li>
 
   $ItemList.append(
     $('<li>').attr('key',itemId).append(
-      $('<div>').addClass('collapsible-header').append(
-        $('<i>').addClass('material-icons')
-      ).append(itemName)
+      $('<div>').addClass('collapsible-header').append(itemName).append(
+        $('<a>').addClass('secondary-content deleteItem').append(
+          $('<i>').addClass('material-icons').text('delete')
+        ).bind('click',DeleteItem )
+      )
     ).append(
       $('<div>').addClass('collapsible-body').append(
         $('<p>').text(itemContent)

@@ -66,10 +66,28 @@ var getAllItems = function(req,res){
   Item.find({ folderid: req.query.folderid }, function (err, returnedItems) {
       if(err === null && returnedItems !== null){
           res.status(200).json(returnedItems);
-          console.log("OK.");
       }else{
           res.sendStatus(400);
           console.log("Error returned from db.");
+      }
+    });
+}
+
+var deleteItem = function(req,res){
+  console.log("Delete item request. Date :" + Date.now());
+
+  if (!req.query.itemid) {
+    res.sendStatus(400);
+    console.log("missing parameters. : " + res.query.itemid);
+    return;
+  }
+
+  Item.remove({ _id: req.query.itemid }, function (err) {
+      if(err === null){
+        res.sendStatus(200);
+      }else{
+        console.log("Error occured : " + err);
+        res.sendStatus(400);
       }
     });
 }
@@ -79,5 +97,7 @@ itemRouter.post('/add', addItem);
 itemRouter.use('/get', getItem);
 
 itemRouter.get('/getall', getAllItems);
+
+itemRouter.get('/delete', deleteItem)
 
 module.exports = itemRouter;

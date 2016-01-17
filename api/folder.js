@@ -78,18 +78,21 @@ var getFolders = function(req,res){
 }
 
 var deleteFolder = function(req,res){
+  //TODO : delete all item related to folder
   console.log("Delete folder request. Date :" + Date.now());
 
-  if (!req.query.folderid) {
+  if (!req.query.folder_id) {
     res.sendStatus(400);
+    console.log("missing parameters. : " + res.query.folder_id);
     return;
   }
 
-  Folder.remove({ _id: req.query.folderid }, function (err) {
+  Folder.remove({ _id: req.query.folder_id }, function (err) {
       if(err === null){
-          res.sendStatus(200);
+        res.sendStatus(200);
       }else{
-          res.sendStatus(400);
+        console.log("Error occured : " + err);
+        res.sendStatus(400);
       }
     });
 }
@@ -100,6 +103,6 @@ folderRouter.use('/getall', getFolders);
 
 folderRouter.use('/get', getFolder);
 
-folderRouter.use('/delete', deleteFolder);
+folderRouter.get('/delete', deleteFolder);
 
 module.exports = folderRouter;
