@@ -10,14 +10,17 @@
 </head>
 
 <body>
-		<nav class="light-blue lighten-1" role="navigation">
-		    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Awesome Bookmarks</a>
+		<nav class="blue-grey" role="navigation">
+		    <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo">Bookmarks</a>
 		      <ul class="right hide-on-med-and-down">
-		        <li><a href="#">Navbar Link</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Log Out</a></li>
 		      </ul>
 
 		      <ul id="nav-mobile" class="side-nav" style="left: -250px;">
-		        <li><a href="#">Navbar Link</a></li>
+		        <li><a href="#">Folder</a></li>
+						<li><a href="#">About</a></li>
+						<li><a href="#">Log Out</a></li>
 		      </ul>
 		      <a href="#" data-activates="nav-mobile" class="button-collapse"><i class="material-icons">menu</i></a>
 		    </div>
@@ -49,12 +52,12 @@
 		</div><!-- /.row -->
 
 		<div id="fixed_addbutton" class="fixed-action-btn vertical" style="bottom: 45px; right: 24px;">
-			<a class="btn-floating btn-large red">
+			<a class="btn-floating btn-large blue">
 				<i class="large material-icons">add</i>
 			</a>
 			<ul>
-				<li><a class="btn-floating red" onclick="HandleAddFolder();"><i class="material-icons">folder</i></a></li>
-				<li><a class="btn-floating red" onclick="HandleAddItem();"><i class="material-icons">bookmark_border</i></a></li>
+				<li><a class="btn-floating blue" onclick="HandleAddFolder();"><i class="material-icons">folder_open</i></a></li>
+				<li><a class="btn-floating blue" onclick="HandleAddItem();"><i class="material-icons">bookmark_border</i></a></li>
 			</ul>
 		</div>
 
