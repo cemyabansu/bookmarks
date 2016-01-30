@@ -45,10 +45,14 @@ function OnFolderClick(){
 
 function HandleAddFolder(){
   $('#addFolderModal').openModal();
+
+  //automatically focus to input
+  $('#AddFolder_folderName').focus();
 }
 
 function HandleAddItem(){
   //adding folderlist to option set
+
   var folderList = $('#folderList .collection-item');
 
   var select = $('#addItem_folderSelect');
@@ -64,11 +68,14 @@ function HandleAddItem(){
 
   select.material_select();
   $('#addItemModal').openModal();
+
+  //automatically focus to input
+  $('#addItem_name').focus();
 }
 
 function SubmitAItem(){
   var folderId = $('#addItem_folderSelect').val();
-  var itemName =$ ('#addItem_namet').val();
+  var itemName =$ ('#addItem_name').val();
   var itemContent = $('#addItem_content').val();
 
   if (folderId === null || folderId === "" || itemName === null || itemName === "" || itemContent === null || itemContent === "") {
@@ -80,6 +87,10 @@ function SubmitAItem(){
 
   // Put the results in a div
   posting.done(function( data ) {
+    $('#addItem_folderSelect').val('');
+    $('#addItem_name').val('');
+    $('#addItem_content').val('');
+
     if (folderId === $('#folderList .active').attr('key')) {
       AddItemToItemList($('#itemList'),itemName, itemContent, data);
     }
