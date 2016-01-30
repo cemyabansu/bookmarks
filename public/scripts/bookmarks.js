@@ -52,6 +52,7 @@ function HandleAddItem(){
   var folderList = $('#folderList .collection-item');
 
   var select = $('#addItem_folderSelect');
+  select.empty();
   for (var i = 0; i < folderList.length; i++) {
     select.append(
       $('<option>').val($(folderList[i]).attr('key')).html($(folderList[i]).children('span').text())
@@ -121,6 +122,10 @@ function SubmitAFolder(){
 function DeleteFolder(){
   var folderId = $(this).closest('#folderCard').attr('key');
 
+  var deleteConfirmation = DeleteConfirmation("folder", folderId);
+}
+
+function DeleteFolderById (folderId) {
   $.get("api/folder/delete", {folder_id : folderId})
   .done(function() {
     var willBeDeleted = $('#folderList li[key="'+ folderId +'"]');
@@ -139,6 +144,27 @@ function DeleteFolder(){
     //remove the item
     willBeDeleted.remove();
   }).fail(function() {
+      alert( "error" );
+  });
+}
+
+function DeleteItemAfterConfirmation(){
+  var type = $('#confirmationOfDelete').attr('type');
+  var itemId = $('#confirmationOfDelete').attr('key');
+
+  if (type === "folder") {
+    DeleteFolderById(itemId);
+  }else if (type === "item") {
+    DeleteItemById(itemId);
+  }
+}
+
+function DeleteItemById(itemId){
+  $.get("api/item/delete", {itemid : itemId})
+  .done(function() {
+    var item = $('li[key="'+ itemId +'"]');
+    item.remove();
+  }).fail(function() {
     alert( "error" );
   });
 }
@@ -149,12 +175,23 @@ function DeleteItem(e){
   var item = $(this).closest('li');
   var itemId = item.attr('key');
 
-  $.get("api/item/delete", {itemid : itemId})
-  .done(function() {
-    item.remove();
-  }).fail(function() {
-    alert( "error" );
-  });
+  var deleteConfirmation = DeleteConfirmation("item", itemId);
+
+  // $.get("api/item/delete", {itemid : itemId})
+  // .done(function() {
+  //   item.remove();
+  // }).fail(function() {
+  //   alert( "error" );
+  // });
+}
+
+function DeleteConfirmation(itemOrFolder, key){
+  var confirmationOfDelete = $('#confirmationOfDelete');
+
+  confirmationOfDelete.attr("type", itemOrFolder);
+  confirmationOfDelete.attr("key", key);
+
+  confirmationOfDelete.openModal();
 }
 
 function AddFolderToFolderList(folderid, name, setActivate){
