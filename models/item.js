@@ -6,7 +6,7 @@ var ItemSchema = new Schema({
         folderid  : {type: Schema.ObjectId, ref:"Folder", childPath:"items"},
         name      : String,
         value     : String,
-        createdat : {type: Date, default: Date.now}
+        createdon : {type: Date, default: Date.now}
     });
 ItemSchema.plugin(relationship, { relationshipPathName:'folderid' });
 module.exports = mongoose.model('Item', ItemSchema);

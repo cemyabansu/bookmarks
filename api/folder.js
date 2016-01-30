@@ -1,5 +1,6 @@
 var express = require('express');
 var User = require('../models/user');
+var Item = require('../models/item');
 var Folder = require('../models/folder');
 
 var folderRouter = express.Router();
@@ -86,6 +87,15 @@ var deleteFolder = function(req,res){
     console.log("missing parameters. : " + res.query.folder_id);
     return;
   }
+
+  Item.find({ folderid: req.query.folder_id }, function(err, items){
+      if (err !== null) {
+        return;
+      }
+      for (var i = 0; i < items.length; i++) {
+        items[i].remove();
+      }
+  });
 
   Folder.remove({ _id: req.query.folder_id }, function (err) {
       if(err === null){

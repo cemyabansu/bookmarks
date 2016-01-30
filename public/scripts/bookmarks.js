@@ -87,6 +87,7 @@ function SubmitAItem(){
 
   // Put the results in a div
   posting.done(function( data ) {
+    //clearing data
     $('#addItem_folderSelect').val('');
     $('#addItem_name').val('');
     $('#addItem_content').val('');

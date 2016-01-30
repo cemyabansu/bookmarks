@@ -8,4 +8,5 @@ var FolderSchema = new Schema({
         items     : [{type:Schema.ObjectId, ref:"Item"}]
     });
 FolderSchema.plugin(relationship, { relationshipPathName:'userid' });
+
 module.exports = mongoose.model('Folder', FolderSchema);
