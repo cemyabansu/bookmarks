@@ -41,6 +41,8 @@ function OnFolderClick(){
     alert( "error" );
   });
 
+  //side the nav
+  $(".button-collapse").sideNav('hide');
 }
 
 function HandleAddFolder(){
@@ -188,13 +190,6 @@ function DeleteItem(e){
   var itemId = item.attr('key');
 
   var deleteConfirmation = DeleteConfirmation("item", itemId);
-
-  // $.get("api/item/delete", {itemid : itemId})
-  // .done(function() {
-  //   item.remove();
-  // }).fail(function() {
-  //   alert( "error" );
-  // });
 }
 
 function DeleteConfirmation(itemOrFolder, key){
@@ -210,6 +205,14 @@ function AddFolderToFolderList(folderid, name, setActivate){
   var folderList = $('#folderList');
   folderList.append(
     $('<li>').attr('class','collection-item').attr('key',folderid).append(
+      $('<span>').append(name)
+    ).bind('click', OnFolderClick)
+  );
+
+  //adding mobile nav
+  var folderListMobile = $('#folderListMobile');
+  folderListMobile.append(
+    $('<li>').attr('key',folderid).append(
       $('<span>').append(name)
     ).bind('click', OnFolderClick)
   );
