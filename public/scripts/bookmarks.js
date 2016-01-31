@@ -2,6 +2,7 @@ $(document).ready(function(){
   $(".button-collapse").sideNav();
 
   $(".deleteFolder").bind('click', DeleteFolder);
+  $(".editFolder").bind('click', EditFolder);
   //loading folders
   LoadFolders();
 });
@@ -19,6 +20,43 @@ function LoadFolders(){
     OnFolderClick.apply($('#folderList li')[1]);
   }).fail(function() {
     alert( "error" );
+  });
+}
+
+function EditFolder(){
+  var folderCard =  $(this).closest('#folderCard')
+  var folderId = folderCard.attr('key');
+  var folderName = folderCard.find('.card-title').text();
+
+
+  $('#UpdateFolder_folderName').val(folderName);
+  $('#updateFolderModal').attr('key', folderId);
+  $('#updateFolderModal').openModal();
+
+  //automatically focus to input
+  $('#UpdateFolder_folderName').focus();
+}
+
+function UpdateAFolder(){
+  var folderName = $('#UpdateFolder_folderName').val();
+  var folderId = $('#updateFolderModal').attr('key');
+
+  // Send the data using post
+  var posting = $.post( "api/folder/update", { folderid: folderId, foldername: folderName } );
+
+  // Put the results in a div
+  posting.done(function( data ) {
+    var folderCard =  $('#folderCard');
+    folderCard.find('.card-title').text(folderName);
+    $('#folderList li[key="'+ folderId +'"]').find('span').text(folderName);
+  });
+
+  posting.fail(function(error){
+    alert("Error occurred while adding item to server.");
+  });
+
+  posting.always(function(){
+    $('#updateFolderModal').closeModal();
   });
 }
 

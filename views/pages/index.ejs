@@ -43,7 +43,13 @@
 					<div id="folderCard" class="card-content">
 						<div>
 							<span class="card-title">Card Title</span>
-							<a class="secondary-content deleteFolder"><i class="material-icons">delete</i></a>
+							<a class="secondary-content optionsList dropdown-button" data-activates='folderOptions'><i class="material-icons">keyboard_arrow_down</i></a>
+							<!-- Dropdown Option -->
+							<ul id='folderOptions' class='dropdown-content'>
+								<li><a class="editFolder">Edit</a></li>
+								<li class="divider"></li>
+								<li><a class="deleteFolder">Delete</a></li>
+							</ul>
 							<ul id="itemList" class="collapsible popout" data-collapsible="accordion">
 							</ul>
             </div>
@@ -58,8 +64,8 @@
 				<i class="large material-icons">add</i>
 			</a>
 			<ul>
-				<li><a class="btn-floating blue" onclick="HandleAddFolder();"><i class="material-icons">folder_open</i></a></li>
-				<li><a class="btn-floating blue" onclick="HandleAddItem();"><i class="material-icons">bookmark_border</i></a></li>
+				<li><a class="btn-floating blue tooltipped" data-position="left" data-delay="25" data-tooltip="Add a folder" onclick="HandleAddFolder();"><i class="material-icons">folder_open</i></a></li>
+				<li><a class="btn-floating blue tooltipped" data-position="left" data-delay="25" data-tooltip="Add a item" onclick="HandleAddItem();"><i class="material-icons">bookmark_border</i></a></li>
 			</ul>
 		</div>
 
@@ -84,7 +90,28 @@
 			</div>
 		</div>
 
-		<!-- Add New Folder Modal -->
+		<!-- Update A Folder Modal -->
+		<div id="updateFolderModal" class="modal">
+			<div class="modal-content">
+				<h4>Update Folder</h4>
+				<div class="row">
+			    <form class="col s12">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">folder</i>
+							<input placeholder="work, school.." id="UpdateFolder_folderName" type="text" class="validate">
+							<label for="first_name">Folder Name</label>
+						</div>
+						<div class="right-align">
+							<button class="btn waves-effect waves-light modal-close updateAFolderButton" onclick="UpdateAFolder();return false;" >Update
+								<i class="material-icons right">update</i>
+							</button>
+						</div>
+			    </form>
+			  </div>
+			</div>
+		</div>
+
+		<!-- Add New Item Modal -->
 		<div id="addItemModal" class="modal">
 			<div class="modal-content">
 				<h4>New Item</h4>

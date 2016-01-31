@@ -79,7 +79,6 @@ var getFolders = function(req,res){
 }
 
 var deleteFolder = function(req,res){
-  //TODO : delete all item related to folder
   console.log("Delete folder request. Date :" + Date.now());
 
   if (!req.query.folder_id) {
@@ -88,6 +87,7 @@ var deleteFolder = function(req,res){
     return;
   }
 
+  //deleting all child items
   Item.find({ folderid: req.query.folder_id }, function(err, items){
       if (err !== null) {
         return;
@@ -107,6 +107,38 @@ var deleteFolder = function(req,res){
     });
 }
 
+var UpdateFolder = function(req,res){
+  console.log("Update folder request. Date :" + Date.now());
+
+  var reqFolderId = req.body.folderid;
+  var reqFolderName = req.body.foldername;
+
+  //controlling values
+  if (!reqFolderId || !reqFolderName || !reqFolderId === "" || reqFolderName === "") {
+    console.log("Request body : " + reqFolderId + " - " + reqFolderName);
+    res.sendStatus(400);
+    return;
+  }
+
+  Folder.findOne({ _id: reqFolderId }, function (err, returnedFolder) {
+      if(err === null && returnedFolder !== null){
+        //change folder name
+        returnedFolder.name = reqFolderName
+
+        //save folder with changes
+        returnedFolder.save(function(err){
+          if (err) {
+            res.sendStatus(400);
+          }else {
+            res.sendStatus(200);
+          }
+        });
+      }else{
+        res.sendStatus(400);
+      }
+    });
+}
+
 folderRouter.post('/add', addFolder);
 
 folderRouter.use('/getall', getFolders);
@@ -114,5 +146,7 @@ folderRouter.use('/getall', getFolders);
 folderRouter.use('/get', getFolder);
 
 folderRouter.get('/delete', deleteFolder);
+
+folderRouter.post('/update', UpdateFolder);
 
 module.exports = folderRouter;

@@ -18,3 +18,13 @@ main {
 {
     cursor: pointer;
 }
+
+.editFolder:hover
+{
+    cursor: pointer;
+}
+
+.optionsList:hover
+{
+    cursor: pointer;
+}
