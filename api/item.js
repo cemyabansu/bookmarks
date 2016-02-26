@@ -92,6 +92,41 @@ var deleteItem = function(req,res){
     });
 }
 
+var updateItem = function(req,res){
+  console.log("Update item request. Date :" + Date.now());
+
+  var reqItemId = req.body.itemid;
+  var reqItemName = req.body.itemname;
+  var reqItemContent = req.body.itemncontent;
+
+  //controlling values
+  if (!reqItemId || !reqItemName || !reqItemContent
+    || !reqItemId === "" || reqItemName === "" || reqItemContent === "") {
+    console.log("Request body : " + reqItemId + " - " + reqItemName + " - " + reqItemContent);
+    res.sendStatus(400);
+    return;
+  }
+
+  Item.findOne({ _id: reqItemId }, function (err, returnedItem) {
+      if(err === null && returnedItem !== null){
+        //change item name
+        returnedItem.name = reqItemName;
+        returnedItem.value = reqItemContent;
+
+        //save folder with changes
+        returnedItem.save(function(err){
+          if (err) {
+            res.sendStatus(400);
+          }else {
+            res.sendStatus(200);
+          }
+        });
+      }else{
+        res.sendStatus(400);
+      }
+    });
+}
+
 itemRouter.post('/add', addItem);
 
 itemRouter.use('/get', getItem);
@@ -99,5 +134,7 @@ itemRouter.use('/get', getItem);
 itemRouter.get('/getall', getAllItems);
 
 itemRouter.get('/delete', deleteItem)
+
+itemRouter.post('/update', updateItem)
 
 module.exports = itemRouter;

@@ -3,9 +3,14 @@ $(document).ready(function(){
 
   $(".deleteFolder").bind('click', DeleteFolder);
   $(".editFolder").bind('click', EditFolder);
+
   //loading folders
   LoadFolders();
 });
+
+function preventClick(e){
+  //e.stopImmediatePropagation();
+}
 
 var defaultUserId = "5684660045cf80ea12073983";
 
@@ -57,6 +62,60 @@ function UpdateAFolder(){
 
   posting.always(function(){
     $('#updateFolderModal').closeModal();
+  });
+}
+
+function EditItem(){
+  //adding folderlist to option set
+  var folderList = $('#folderList .collection-item');
+  var select = $('#updateItem_folderSelect');
+  select.empty();
+  for (var i = 0; i < folderList.length; i++) {
+    select.append(
+      $('<option>').val($(folderList[i]).attr('key')).html($(folderList[i]).children('span').text())
+    );
+  }
+  //set default selected folder
+  select.val($('#folderList .active').attr('key'));
+  select.material_select();
+
+  var item = $(this).closest('.item');
+  var itemId = item.attr('key');
+  var itemName = item.find('.collapsible-header span').text();
+  var itemContent = item.find('.collapsible-body p').text();
+
+  $('#updateItemModal').openModal();
+  $('#updateItemModal').attr('key', itemId);
+
+  $('#updateItem_name').val(itemName);
+  $('#updateItem_content').val(itemContent);
+
+  //automatically focus to input
+  $('#updateItem_content').focus();
+}
+
+function UpdateAItem(){
+  var itemName = $('#updateItem_name').val();
+  var itemContent = $('#updateItem_content').val();
+  var itemId = $('#updateItemModal').attr('key');
+
+  // Send the data using post
+  var posting = $.post( "api/item/update", { itemid: itemId, itemname: itemName, itemncontent:itemContent } );
+
+  // Put the results in a div
+  posting.done(function( data ) {
+    // TODO : update list
+    var updatedItem = $('#itemList li[key="'+ itemId +'"]');
+    updatedItem.find('.collapsible-header span').text(itemName);
+    updatedItem.find('.collapsible-body p').text(itemContent).linkify();
+  });
+
+  posting.fail(function(error){
+    alert("Error occurred while adding item to server.");
+  });
+
+  posting.always(function(){
+    $('#updateItemModal').closeModal();
   });
 }
 
@@ -224,7 +283,7 @@ function DeleteItemById(itemId){
 function DeleteItem(e){
   //to prevent other click action.
   e.stopImmediatePropagation();
-  var item = $(this).closest('li');
+  var item = $(this).closest('.item');
   var itemId = item.attr('key');
 
   var deleteConfirmation = DeleteConfirmation("item", itemId);
@@ -262,24 +321,59 @@ function AddFolderToFolderList(folderid, name, setActivate){
 
 function AddItemToItemList($ItemList, itemName, itemContent, itemId){
   // <li>
-  //    <div class="collapsible-header"><i class="material-icons">bookmark border</i>
-  //      First
-  //      <a class="secondary-content deleteFolder"><i class="material-icons">delete</i></a>
+  //    <div class="collapsible-header"><i class="material-icons">bookmark_border</i>
+  //      <p>First</p>
+  //      <a class="secondary-content dropdown-button optionList" data-beloworigin="true" data-activates='itemOptions'><i class="material-icons">keyboard_arrow_down</i></a>
+  //      <!-- Dropdown Option -->
+  //      <ul id='itemOptions' class='dropdown-content'>
+  //        <li><a class="editItem">Edit</a></li>
+  //        <li class="divider"></li>
+  //        <li><a class="deleteItem">Delete</a></li>
+  //      </ul>
   //    </div>
-  //   <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
+  //    <div class="collapsible-body"><p>Lorem ipsum dolor sit amet.</p></div>
   // </li>
 
   $ItemList.append(
-    $('<li>').attr('key',itemId).append(
-      $('<div>').addClass('collapsible-header').append(itemName).append(
-        $('<a>').addClass('secondary-content deleteItem').append(
-          $('<i>').addClass('material-icons').text('delete')
-        ).bind('click',DeleteItem )
+    $('<li>').addClass('item').attr('key',itemId).append(
+      $('<div>').addClass('collapsible-header').append($('<span>').append(itemName)).append(
+        $('<a>').addClass('secondary-content optionList dropdown-button').append(
+          $('<i>').addClass('material-icons').text('keyboard_arrow_down')
+        ).attr('data-activates','itemOptions' + itemId).attr('data-beloworigin', 'true')
+      ).append(
+        $('<ul>').attr('id', 'itemOptions' + itemId).addClass('dropdown-content').append(
+          $('<li>').append(
+            $('<a>').addClass('editItem').text('Edit')
+          ).bind('click', EditItem)
+        ).append(
+          $('<li>').addClass('divider')
+        ).append(
+          $('<li>').append(
+            $('<a>').addClass('deleteItem').text('Delete')
+          ).bind('click', DeleteItem)
+        )
       )
     ).append(
       $('<div>').addClass('collapsible-body').append(
-        $('<p>').text(itemContent)
+        $('<p>').text(itemContent).linkify()
       )
     )
+  );
+
+
+
+  $('.dropdown-button').click(function( event ) {
+    event.stopPropagation();
+  });
+
+  $('.dropdown-button').dropdown({
+      inDuration: 300,
+      outDuration: 225,
+      constrain_width: false, // Does not change width of dropdown to that of the activator
+      hover: false, // Activate on hover
+      gutter: 0, // Spacing from edge
+      belowOrigin: true, // Displays dropdown below the button
+      alignment: 'left' // Displays dropdown with edge aligned to the left of button
+    }
   );
 }
